@@ -1,0 +1,222 @@
+openapi: 3.0.0
+info:
+  title: Price Query API
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080/api
+    description: Servidor de desarrollo local
+
+paths:
+  /prices:
+    get:
+      tags:
+        - Price Query
+      summary: Obtiene el precio aplicable para un producto
+      description: |
+        Consulta el precio final a aplicar para un producto de una cadena específica
+        en una fecha y hora determinada. 
+
+      parameters:
+        - name: date
+          in: query
+          required: true
+          description: |
+            **Fecha y hora de aplicación** en formato `yyyy-MM-dd-HH.mm.ss`.
+          schema:
+            type: string
+            example: "2020-06-14-10.00.00"
+          x-example: "2020-06-14-10.00.00"
+
+        - name: productId
+          in: query
+          required: true
+          description: |
+            Identificador único del producto. Debe ser un número entero positivo.
+          schema:
+            type: integer
+            minimum: 1
+            example: 35455
+          x-example: 35455
+
+        - name: brandId
+          in: query
+          required: true
+          description: |
+            Identificador de la cadena comercial.
+          schema:
+            type: integer
+            minimum: 1
+            example: 1
+          x-example: 1
+
+      responses:
+        '200':
+          description: |
+            **Se devuelve un precio aplicable para el producto en la fecha actual**
+
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PriceResponse'
+              examples:
+                test1:
+                  summary: Test 1 - 10:00 día 14
+                  value:
+                    productId: 35455
+                    brandId: 1
+                    priceList: 1
+                    startDate: "2020-06-14T00:00:00"
+                    endDate: "2020-12-31T23:59:59"
+                    price: "35.50€"
+        '400':
+          description: |
+            **Solicitud inválida.** 
+            
+            Errores comunes:
+            - Formato de fecha incorrecto
+            - ID de producto o cadena no válido
+            - Parámetros requeridos faltantes
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                invalidDate:
+                  summary: Formato de fecha inválido
+                  value:
+                    timestamp: "2024-01-15T10:30:45.123Z"
+                    status: 400
+                    error: "Bad Request"
+                    message: "Formato de fecha inválido. Use yyyy-MM-dd-HH.mm.ss"
+                    path: "/api/prices"
+                missingParam:
+                  summary: Parámetro requerido faltante
+                  value:
+                    timestamp: "2024-01-15T10:31:22.456Z"
+                    status: 400
+                    error: "Bad Request"
+                    message: "El parámetro 'productId' es requerido"
+                    path: "/api/prices"
+        '404':
+          description: |
+            **No se encontró un precio aplicable** para los criterios especificados.
+            
+            Puede ocurrir cuando:
+            - No hay tarifas definidas para el producto/cadena
+            - No hay tarifas vigentes en la fecha especificada
+            - El producto o cadena no existen
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                timestamp: "2024-01-15T10:32:15.789Z"
+                status: 404
+                error: "Not Found"
+                message: "No se encontró precio aplicable para fecha: 2020-06-14T10:00:00, productId: 35455, brandId: 1"
+                path: "/api/prices"
+        '500':
+          description: |
+            **Error interno del servidor.**
+            
+            Error inesperado en el servidor. Contacte al administrador.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                timestamp: "2024-01-15T10:33:05.321Z"
+                status: 500
+                error: "Internal Server Error"
+                message: "Error interno del servidor"
+                path: "/api/prices"
+                details: "Database connection failed"
+
+components:
+  schemas:
+    PriceResponse:
+      type: object
+      description: Respuesta con el precio aplicable encontrado
+      required:
+        - productId
+        - brandId
+        - priceList
+        - startDate
+        - endDate
+        - price
+        - currency
+
+      properties:
+        productId:
+          type: integer
+          description: Identificador del producto
+          example: 35455
+
+        brandId:
+          type: integer
+          description: Identificador de la cadena
+          example: 1
+
+        priceList:
+          type: integer
+          description: Identificador de la tarifa de precios aplicada.
+          example: 1
+
+        startDate:
+          type: string
+          format: date-time
+          description: Fecha y hora de inicio de la tarifa
+          example: "2020-06-14T00:00:00"
+
+        endDate:
+          type: string
+          format: date-time
+          description: Fecha y hora de fin de la tarifa
+          example: "2020-12-31T23:59:59"
+
+        price:
+          type: string
+          description: Precio final a aplicar
+          example: "35.50€"
+
+    ErrorResponse:
+      type: object
+      description: Respuesta de error estandarizada
+      required:
+        - timestamp
+        - status
+        - error
+        - message
+        - path
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+          description: Marca de tiempo cuando ocurrió el error
+          example: "2024-01-15T10:30:45.123Z"
+        status:
+          type: integer
+          description: Código de estado HTTP
+          example: 404
+        error:
+          type: string
+          description: Descripción del error HTTP
+          example: "Not Found"
+        message:
+          type: string
+          description: Mensaje descriptivo del error para el usuario
+          example: "No se encontró precio aplicable para los criterios especificados"
+        path:
+          type: string
+          description: Ruta del endpoint que generó el error
+          example: "/api/prices"
+        details:
+          type: string
+          description: Detalles técnicos adicionales del error (solo desarrollo)
+          example: "Price not found for productId: 35455, brandId: 1, date: 2020-06-14T10:00:00"
+
+
+tags:
+  - name: Price Query
+    description: Endpoints para consulta de precios aplicables

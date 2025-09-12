@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: ApiPrice
+
+
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+    url: /api.yaml

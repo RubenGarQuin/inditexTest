@@ -11,8 +11,8 @@
 	<groupId>com.inditex.knowmad</groupId>
 	<artifactId>inditex</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>inditex.test</name>
-	<description>Demo project for Spring Boot</description>
+	<name>PriceApi</name>
+	<description>Project for Knowmad</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -53,6 +53,11 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>2.8.13</version>
 		</dependency>
 	</dependencies>
 
