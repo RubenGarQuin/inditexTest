@@ -1,0 +1,28 @@
+package com.inditex.knowmad.inditex.infraestructure.out.jpa;
+
+import com.inditex.knowmad.inditex.domain.model.Price;
+import com.inditex.knowmad.inditex.domain.port.out.PriceRepository;
+import org.springframework.stereotype.Repository;
+
+import java.time.LocalDateTime;
+import java.util.Optional;
+
+
+/**
+ * Adapter de la interfaz de salida del dominio para conexiones a la base de datos
+ */
+@Repository
+public class PriceRepositoryAdapter implements PriceRepository {
+
+    private final PriceJpaRepository priceJpaRepository;
+
+    public PriceRepositoryAdapter(PriceJpaRepository priceJpaRepository) {
+        this.priceJpaRepository = priceJpaRepository;
+    }
+
+
+    @Override
+    public Optional<Price> findApplicablePrice(LocalDateTime date, Long productId, Long brandId) {
+        return Optional.empty();
+    }
+}

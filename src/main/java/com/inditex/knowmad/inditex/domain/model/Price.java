@@ -15,9 +15,9 @@ import java.time.LocalDateTime;
 @Getter
 public class Price {
 
-    private final Long brandId;
-    private final Long productId;
-    private final Integer priceList;
+    private final Brand brandId;
+    private final Product productId;
+    private final PriceList priceList;
     private final LocalDateTime startDate;
     private final LocalDateTime endDate;
     private final Integer priority;
