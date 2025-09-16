@@ -5,6 +5,6 @@ import com.inditex.knowmad.inditex.domain.model.Price;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-public interface PriceRepository {
+public interface PriceRepositoryPort {
     Optional<Price> findApplicablePrice(LocalDateTime date, Long productId , Long brandId);
 }

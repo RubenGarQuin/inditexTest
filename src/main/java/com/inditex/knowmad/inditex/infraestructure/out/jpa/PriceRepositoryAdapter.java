@@ -1,7 +1,7 @@
 package com.inditex.knowmad.inditex.infraestructure.out.jpa;
 
 import com.inditex.knowmad.inditex.domain.model.Price;
-import com.inditex.knowmad.inditex.domain.port.out.PriceRepository;
+import com.inditex.knowmad.inditex.domain.port.out.PriceRepositoryPort;
 import com.inditex.knowmad.inditex.infraestructure.mapper.PriceMapper;
 import org.springframework.stereotype.Repository;
 
@@ -13,7 +13,7 @@ import java.util.Optional;
  * Adapter de la interfaz de salida del dominio para conexiones a la base de datos
  */
 @Repository
-public class PriceRepositoryAdapter implements PriceRepository {
+public class PriceRepositoryAdapter implements PriceRepositoryPort {
 
     private final PriceJpaRepository priceJpaRepository;
     private final PriceMapper priceMapper;
