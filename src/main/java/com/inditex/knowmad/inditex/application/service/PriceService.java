@@ -9,7 +9,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
-
+/**
+ * Servicio para el manejo de las operaciones relativas al model Price
+ */
 @Service
 public class PriceService implements PriceUseCase {
 
@@ -19,6 +21,13 @@ public class PriceService implements PriceUseCase {
         this.priceRepositoryPort = priceRepositoryPort;
     }
 
+    /**
+     * Busca el precio a aplicar para un producto de una marca en una fecha concreta
+     * @param date
+     * @param productId
+     * @param brandId
+     * @return
+     */
     @Override
     public Price getPrice(LocalDateTime date, Long productId, Long brandId) {
         return priceRepositoryPort.findApplicablePrice(date,productId,brandId).

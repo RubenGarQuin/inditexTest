@@ -59,16 +59,17 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PriceResponse'
-              examples:
-                test1:
-                  summary: Test 1 - 10:00 día 14
-                  value:
-                    productId: 35455
-                    brandId: 1
-                    priceList: 1
-                    startDate: "2020-06-14T00:00:00"
-                    endDate: "2020-12-31T23:59:59"
-                    price: "35.50€"
+              example:
+                productId: 35455
+                brandId: 1
+                priceList:
+                  id: 1
+                  name: "Tarifa estandar"
+                startDate: "2020-06-14T00:00"
+                endDate: "2020-12-31T23:59:59"
+                price: "35.50 EUR"
+
+
         '400':
           description: |
             **Solicitud inválida.** 
@@ -85,19 +86,14 @@ paths:
                 invalidDate:
                   summary: Formato de fecha inválido
                   value:
-                    timestamp: "2024-01-15T10:30:45.123Z"
-                    status: 400
-                    error: "Bad Request"
-                    message: "Formato de fecha inválido. Use yyyy-MM-dd-HH.mm.ss"
-                    path: "/api/prices"
-                missingParam:
-                  summary: Parámetro requerido faltante
-                  value:
-                    timestamp: "2024-01-15T10:31:22.456Z"
-                    status: 400
-                    error: "Bad Request"
-                    message: "El parámetro 'productId' es requerido"
-                    path: "/api/prices"
+                    code: 400
+                    error: "Formato de fecha inválido. Use yyyy-MM-dd-HH.mm.ss"
+                  missingParam:
+                    summary: Parámetro requerido faltante
+                    value:
+                      code: 400
+                      error: "El parámetro 'productId' es requerido"
+
         '404':
           description: |
             **No se encontró un precio aplicable** para los criterios especificados.
@@ -111,11 +107,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               example:
-                timestamp: "2024-01-15T10:32:15.789Z"
-                status: 404
-                error: "Not Found"
-                message: "No se encontró precio aplicable para fecha: 2020-06-14T10:00:00, productId: 35455, brandId: 1"
-                path: "/api/prices"
+                code: 404
+                error: "No se ha encontrado precio para el producto 35455 de la marca 1 en la fecha correspondiente (2050-06-14T10:00)"
         '500':
           description: |
             **Error interno del servidor.**
@@ -126,12 +119,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               example:
-                timestamp: "2024-01-15T10:33:05.321Z"
-                status: 500
-                error: "Internal Server Error"
-                message: "Error interno del servidor"
-                path: "/api/prices"
-                details: "Database connection failed"
+                code: 500
+                error: "Database connection failed"
 
 components:
   schemas:
@@ -145,7 +134,6 @@ components:
         - startDate
         - endDate
         - price
-        - currency
 
       properties:
         productId:
@@ -159,9 +147,21 @@ components:
           example: 1
 
         priceList:
-          type: integer
-          description: Identificador de la tarifa de precios aplicada.
-          example: 1
+          type: object
+          description: Informacion de la tarifa de precios aplicada
+          required:
+            - id
+            - name
+          properties:
+            id:
+              type: integer
+              format: int64
+              description: Identificador de la tarifa
+              example: 1
+            name:
+              type: string
+              description: Nombre de la tarifa
+              example: "Tarifa estandar"
 
         startDate:
           type: string
@@ -178,24 +178,16 @@ components:
         price:
           type: string
           description: Precio final a aplicar
-          example: "35.50€"
+          example: "35.50 EUR"
 
     ErrorResponse:
       type: object
       description: Respuesta de error estandarizada
       required:
-        - timestamp
-        - status
+        - code
         - error
-        - message
-        - path
       properties:
-        timestamp:
-          type: string
-          format: date-time
-          description: Marca de tiempo cuando ocurrió el error
-          example: "2024-01-15T10:30:45.123Z"
-        status:
+        code:
           type: integer
           description: Código de estado HTTP
           example: 404
@@ -203,19 +195,6 @@ components:
           type: string
           description: Descripción del error HTTP
           example: "Not Found"
-        message:
-          type: string
-          description: Mensaje descriptivo del error para el usuario
-          example: "No se encontró precio aplicable para los criterios especificados"
-        path:
-          type: string
-          description: Ruta del endpoint que generó el error
-          example: "/api/prices"
-        details:
-          type: string
-          description: Detalles técnicos adicionales del error (solo desarrollo)
-          example: "Price not found for productId: 35455, brandId: 1, date: 2020-06-14T10:00:00"
-
 
 tags:
   - name: Price Query
