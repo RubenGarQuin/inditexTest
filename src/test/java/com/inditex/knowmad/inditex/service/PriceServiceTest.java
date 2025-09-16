@@ -14,7 +14,6 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -70,4 +69,6 @@ public class PriceServiceTest {
         assertTrue(exception.getMessage().contains("No se ha encontrado precio para el producto 35455 de la marca 1 en la fecha correspondiente (" +
                 date+")"));
     }
+
+
 }

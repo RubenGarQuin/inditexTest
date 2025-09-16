@@ -26,7 +26,8 @@ public class PriceControllerTest {
 
 
     /**
-     * Test de caso ideal donde existe el precio buscado
+     * Test de caso ideal donde existe el precio buscado.
+     * Test 1
      */
     @Test
     void testGetPriceEndpoint() throws Exception {
@@ -37,6 +38,7 @@ public class PriceControllerTest {
                         .param("brandId", "1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.price").exists())
+                .andExpect(jsonPath("$.priceList.id").value(1))
                 .andExpect(jsonPath("$.productId").value(35455))
                 .andExpect(jsonPath("$.brandId").value(1))
                 .andExpect(jsonPath("$.price").value("35.50 EUR"));
@@ -58,8 +60,7 @@ public class PriceControllerTest {
                 .andExpect(jsonPath("$.Error").exists())
                 .andExpect(jsonPath("$.Error").value(
                         "No se ha encontrado precio para el producto 35455 de la marca 1 en la fecha correspondiente (2050-06-14T10:00)"))
-                .andExpect(jsonPath("$.code").value(404))
-        ;
+                .andExpect(jsonPath("$.code").value(404));
     }
 
 
@@ -78,4 +79,84 @@ public class PriceControllerTest {
     }
 
 
+    /**
+     * Test de caso con varios precios posibles para ese rango de tiempo.
+     * Test 2
+     */
+    @Test
+    void testGetPriceWithMultipleResult() throws Exception {
+
+        mockMvc.perform(get("/prices")
+                        .param("date", "2020-06-14T16:00:00")
+                        .param("productId", "35455")
+                        .param("brandId", "1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.price").exists())
+                .andExpect(jsonPath("$.productId").value(35455))
+                .andExpect(jsonPath("$.brandId").value(1))
+                .andExpect(jsonPath("$.price").value("25.45 EUR"))
+                .andExpect(jsonPath("$.priceList.id").value(2));
+    }
+
+
+    /**
+     * Test para caso con fecha de tarifa vencida.
+     * Test 3
+     */
+    @Test
+    void testGetPriceCheckEndDate() throws Exception {
+
+        mockMvc.perform(get("/prices")
+                        .param("date", "2020-06-14T21:00:00")
+                        .param("productId", "35455")
+                        .param("brandId", "1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.price").exists())
+                .andExpect(jsonPath("$.productId").value(35455))
+                .andExpect(jsonPath("$.brandId").value(1))
+                .andExpect(jsonPath("$.price").value("35.50 EUR"))
+                .andExpect(jsonPath("$.priceList.id").value(1));
+    }
+
+
+
+    /**
+     * Test para varias tarifas activas iniciadas dias diferentes.
+     * Test 4
+     */
+    @Test
+    void testGetPriceCheckDifferentDays() throws Exception {
+
+        mockMvc.perform(get("/prices")
+                        .param("date", "2020-06-15T10:00:00")
+                        .param("productId", "35455")
+                        .param("brandId", "1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.price").exists())
+                .andExpect(jsonPath("$.productId").value(35455))
+                .andExpect(jsonPath("$.brandId").value(1))
+                .andExpect(jsonPath("$.price").value("30.50 EUR"))
+                .andExpect(jsonPath("$.priceList.id").value(3));
+    }
+
+
+
+    /**
+     * Test para varias tarifas activas con mismo endDate
+     * Test 4
+     */
+    @Test
+    void testGetPriceCheckSameEndDate() throws Exception {
+
+        mockMvc.perform(get("/prices")
+                        .param("date", "2020-06-16T21:00:00")
+                        .param("productId", "35455")
+                        .param("brandId", "1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.price").exists())
+                .andExpect(jsonPath("$.productId").value(35455))
+                .andExpect(jsonPath("$.brandId").value(1))
+                .andExpect(jsonPath("$.price").value("38.95 EUR"))
+                .andExpect(jsonPath("$.priceList.id").value(4));
+    }
 }
