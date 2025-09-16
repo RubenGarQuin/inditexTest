@@ -20,6 +20,6 @@ public class PriceService implements PriceUseCase {
     @Override
     public Price getPrice(LocalDateTime date, Long productId, Long brandId) {
         var price = priceRepository.findApplicablePrice(date,productId,brandId);
-        return null;
+        return price.get();
     }
 }

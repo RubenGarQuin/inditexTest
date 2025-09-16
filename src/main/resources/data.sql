@@ -2,7 +2,7 @@ INSERT INTO brand (id, name) VALUES (1, 'ZARA');
 
 INSERT INTO product (id, name) VALUES (35455, 'Sample Product');
 
-INSERT INTO price_list (id, description) VALUES
+INSERT INTO price_list (id, name) VALUES
 (1, 'Tarifa estandar'),
 (2, 'Promoción verano'),
 (3, 'Promoción invierno'),

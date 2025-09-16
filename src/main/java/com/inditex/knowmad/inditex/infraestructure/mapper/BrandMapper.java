@@ -4,7 +4,8 @@ package com.inditex.knowmad.inditex.infraestructure.mapper;
 import com.inditex.knowmad.inditex.domain.model.Brand;
 import com.inditex.knowmad.inditex.infraestructure.out.jpa.entities.BrandEntity;
 import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
+import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
 
 /**
@@ -16,7 +17,8 @@ import org.mapstruct.factory.Mappers;
 @Mapper(componentModel = "spring")
 public interface BrandMapper {
 
-    BrandMapper INSTANCE = Mappers.getMapper(BrandMapper.class);
-
+    @Mapping(source = "name", target = "name")
+    @Mapping(source = "id", target = "brandId")
     Brand toDomain(BrandEntity entity);
+
 }

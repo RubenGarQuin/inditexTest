@@ -4,6 +4,8 @@ package com.inditex.knowmad.inditex.infraestructure.out.jpa.entities;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -16,6 +18,8 @@ import java.util.Objects;
  */
 @Embeddable
 @AllArgsConstructor
+@NoArgsConstructor
+@Getter
 public class PriceId implements Serializable {
 
     @Column(name = "brand_id")

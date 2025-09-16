@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 public interface PriceJpaRepository extends JpaRepository<PricesEntity, PriceId> {
-    @Query("SELECT p FROM PricesEntity p")
+    @Query("select p from PricesEntity p WHERE p.id.productId = :productId AND p.id.brandId = :brandId "+
+            "AND :date BETWEEN p.id.startDate AND p.endDate")
     Optional<PricesEntity> findApplicablePrice(LocalDateTime date, Long productId , Long brandId);
 }

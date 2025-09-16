@@ -20,5 +20,5 @@ public class PriceListEntity {
     @Id
     private Long id;
 
-    private String description;
+    private String name;
 }
