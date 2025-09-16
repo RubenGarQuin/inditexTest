@@ -27,6 +27,6 @@ public interface PriceMapper {
     @Mapping(source = "priceList", target = "priceList")
     @Mapping(target = "startDate", expression = "java(price.getStartDate().toString())")
     @Mapping(target = "endDate", expression = "java(price.getEndDate().toString())")
-    @Mapping(target = "price", expression = "java(price.getPrice().toString())")
+    @Mapping(target = "price", expression = "java(price.getPrice().toString() +' '+ price.getCurrency())")
     PriceResponseDto toDto(Price price);
 }
