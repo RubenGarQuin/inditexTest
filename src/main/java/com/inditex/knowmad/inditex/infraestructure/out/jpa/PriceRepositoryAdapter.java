@@ -26,7 +26,7 @@ public class PriceRepositoryAdapter implements PriceRepositoryPort {
 
     @Override
     public Optional<Price> findApplicablePrice(LocalDateTime date, Long productId, Long brandId) {
-        return priceJpaRepository.findApplicablePrice(date,productId,brandId).
-                stream().findFirst().map(priceMapper::toDomain);
+        return priceJpaRepository.findApplicablePrice(date,productId,brandId).stream().
+                findFirst().map(priceMapper::toDomain);
     }
 }
